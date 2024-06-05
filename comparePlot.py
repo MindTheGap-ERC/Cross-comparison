@@ -243,11 +243,11 @@ def plotSpatialPDE(filename, showHeaviside, t_ind):
     
     colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
     
-    plt.plot(x,df[t_ind,0,:],label='AR_m',linestyle='dashdot',color=colors[0])
-    plt.plot(x,df[t_ind,1,:],label='CA_m',linestyle='dashdot',color=colors[1])
-    plt.plot(x,df[t_ind,4,:],label='phi_m',linestyle='dashdot',color=colors[2])
-    plt.plot(x,df[t_ind,2,:],label='Ca_m',linestyle='dashdot',color=colors[3])
-    plt.plot(x,df[t_ind,3,:],label='CO_m',linestyle='dashdot',color=colors[4])
+    plt.plot(x,df[t_ind,0,:],label='AR_pde',linestyle='dashdot',color=colors[0])
+    plt.plot(x,df[t_ind,1,:],label='CA_pde',linestyle='dashdot',color=colors[1])
+    plt.plot(x,df[t_ind,4,:],label='phi_pde',linestyle='dashdot',color=colors[2])
+    plt.plot(x,df[t_ind,2,:],label='Ca_pde',linestyle='dashdot',color=colors[3])
+    plt.plot(x,df[t_ind,3,:],label='CO_pde',linestyle='dashdot',color=colors[4])
     
     if (showHeaviside):
         plotHeaviside(x/Xs)
@@ -364,7 +364,7 @@ savefilename = 'comp_t_1_ft_py_mat.png'
 fig = plt.figure(figsize=(12,10))
 
 # plot python output 
-rhy = plotSpatialRhy('%srhythmite_solution_t_000001.ascii'%(savedir), showHeaviside)
+rhy = plotSpatialRhy('%ssolution_t_000001.ascii'%(savedir), showHeaviside)
 # plot the Fortran output
 ft = plotSpatialFt('%samarlt1'%(savedir))
 # plot the Matlab
