@@ -399,9 +399,43 @@ plt.plot(rhy.x*x_scale, np.abs(rhy.co - ft.CO.loc[:199]),label='co',color=colors
 plt.xlabel('x (cm)')
 plt.ylabel('residuals')
 plt.xlim(0,500)
-plt.ylim(0, 0.05)
+plt.ylim(0, 0.01)
+plt.legend()
+plt.savefig('%s%s'%(savedir,resfilename))
+plt.clf()
+
+########################## pypde vs. ft residuals #############################
+resfilename = 'res_t_1_ft_pde.png'
+fig = plt.figure(figsize=(12,10))
+plt.plot(rhy.x*x_scale, np.abs(pde[1,0,:] - ft.AR.loc[:199]), label='AR',color=colors[0], marker='x')
+plt.plot(rhy.x*x_scale, np.abs(pde[1,1,:] - ft.CA.loc[:199]), label='CA',color=colors[1], marker ='x')
+plt.plot(rhy.x*x_scale, np.abs(pde[1,4,:] - ft.Po.loc[:199]),label='Po',color=colors[2], marker='x')
+plt.plot(rhy.x*x_scale, np.abs(pde[1,2,:] - ft.Ca.loc[:199]),label='ca',color=colors[3], marker='x')
+plt.plot(rhy.x*x_scale, np.abs(pde[1,3,:] - ft.CO.loc[:199]),label='co',color=colors[4], marker='x')
+plt.xlabel('x (cm)')
+plt.ylabel('residuals')
+plt.xlim(0,500)
+plt.ylim(0, 0.01)
+plt.legend()
 
 plt.savefig('%s%s'%(savedir,resfilename))
+plt.clf()
+
+########################## pypde vs. rhythmite residuals ######################
+resfilename = 'res_t_1_py_pde.png'
+fig = plt.figure(figsize=(12,10))
+plt.plot(rhy.x*x_scale, np.abs(pde[1,0,:] - rhy.AR), label='AR',color=colors[0], marker='x')
+plt.plot(rhy.x*x_scale, np.abs(pde[1,1,:] - rhy.CA), label='CA',color=colors[1], marker ='x')
+plt.plot(rhy.x*x_scale, np.abs(pde[1,4,:] - rhy.phi),label='Po',color=colors[2], marker='x')
+plt.plot(rhy.x*x_scale, np.abs(pde[1,2,:] - rhy.ca),label='ca',color=colors[3], marker='x')
+plt.plot(rhy.x*x_scale, np.abs(pde[1,3,:] - rhy.co),label='co',color=colors[4], marker='x')
+plt.xlabel('x (cm)')
+plt.ylabel('residuals')
+plt.xlim(0,500)
+plt.ylim(0, 0.01)
+plt.legend()
+plt.savefig('%s%s'%(savedir,resfilename))
+plt.clf()
 
 ########################### do a temporal plot ###############################
 
