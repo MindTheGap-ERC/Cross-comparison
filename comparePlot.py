@@ -309,7 +309,7 @@ def plotHeaviside(x):
 benchmarkComp = False
 showHeaviside = False
 
-savedir = '../'
+savedir = ''
 savefilename = 'comp_t_1_ft_py_mat.png'
 
 fig = plt.figure(figsize=(12,10))
