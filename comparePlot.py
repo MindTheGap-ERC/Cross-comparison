@@ -206,6 +206,55 @@ def plotSpatialMAT(filename, showHeaviside, t_ind):
     # return the loaded df, for plotting residuals separately
     return df
 
+def plotSpatialPDE(filename, showHeaviside, t_ind):
+    '''
+    Plot a depth profile for all solution variables at fixed time.
+    For py-pde output.
+
+    Parameters
+    ----------
+    filename : STR
+        Name of the data file to plot from, format is '/path/to/file/Scenario_integrated.h5',
+        which contains the full soln.
+        
+    showHeaviside : BOOL
+        Switch for optionally plotting the Heaviside marking the ADZ. 
+        
+    t_ind : INT
+        Time index at which to plot the depth profile.
+
+    Returns
+    -------
+    df : Numpy array
+        the soln data, in case we want to use it later.
+
+    '''
+    # load data in the hdf5 file
+    sol = h5py.File(filename,'r')
+    
+    # convert to a np array
+    df = np.array(sol['data'])
+    
+    # this doesn't store a x points array, calc it from L_x at the number points
+    nnx = len(df[0,0,:])
+    
+    Xs = 131.9/0.1 # depth scaling constant
+    x = np.linspace(0, 500, nnx)
+    
+    colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
+    
+    plt.plot(x,df[t_ind,0,:],label='AR_m',linestyle='dashdot',color=colors[0])
+    plt.plot(x,df[t_ind,1,:],label='CA_m',linestyle='dashdot',color=colors[1])
+    plt.plot(x,df[t_ind,4,:],label='phi_m',linestyle='dashdot',color=colors[2])
+    plt.plot(x,df[t_ind,2,:],label='Ca_m',linestyle='dashdot',color=colors[3])
+    plt.plot(x,df[t_ind,3,:],label='CO_m',linestyle='dashdot',color=colors[4])
+    
+    if (showHeaviside):
+        plotHeaviside(x/Xs)
+    
+    # return the loaded df, for plotting residuals separately
+    return df
+
 #################### we need tstep data to plot time series ###################
 
 # def plotTemporalMAT(filename, showHeaviside, x_ind):
@@ -319,8 +368,9 @@ rhy = plotSpatialRhy('%srhythmite_solution_t_000001.ascii'%(savedir), showHeavis
 # plot the Fortran output
 ft = plotSpatialFt('%samarlt1'%(savedir))
 # plot the Matlab
-mat = plotSpatialMAT('%sMatlab/Scenario_integrated.h5'%(savedir), showHeaviside, 1)
-
+#mat = plotSpatialMAT('%sMatlab/Scenario_integrated.h5'%(savedir), showHeaviside, 1)
+# plot marlpde output
+pde = plotSpatialPDE('%spy-pde/LMAHeureuxPorosityDiff.hdf5'%(savedir), showHeaviside, 1)
     
 # if benchmark, plot the Fig3e data for comparison
 if (benchmarkComp):
