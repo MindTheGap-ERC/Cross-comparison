@@ -255,6 +255,52 @@ def plotSpatialPDE(filename, showHeaviside, t_ind):
     # return the loaded df, for plotting residuals separately
     return df
 
+def plotTemporalPDE(filename, depth):
+      '''
+      Plot the time series at fixed depth for all solution variables from 
+      Rhythmite output 
+
+      Parameters
+      ----------
+      filename : STR
+          A .hdf5 file in the format produced by marlpde, so containting two 
+          keys: `data` and `times`
+
+      depth : INT
+          Depth in the grid, value between 0 and 199, 0 is the surface.
+          
+      Returns
+      -------
+      None.
+
+      '''
+      # load data in the hdf5 file
+      sol = h5py.File(filename,'r')
+    
+      # convert to a np array
+      df = np.array(sol['data'])
+      dt = np.array(sol['times'])
+
+      Ts = 131.9/0.1**2 # time scaling constant
+      t_plot = np.array(dt*Ts/1000)
+      
+      plt.plot(t_plot, np.array(df[:,0,depth]), label='AR_pde')
+      plt.plot(t_plot, np.array(df[:,1,depth]), label='CA_pde')
+      plt.plot(t_plot, np.array(df[:,4,depth]), label='phi_pde')
+      plt.plot(t_plot, np.array(df[:,2,depth]), label='Ca_pde')
+      plt.plot(t_plot, np.array(df[:,3,depth]), label='CO_pde')
+      
+
+def floatMarl(df):
+    '''
+    take the lheureux.f output as a dataframe and float it
+    python apparently doesn't recognise Fortran double format anyomore
+    so need to replace the D with E first
+    '''
+    for i in range(0,len(df.columns)):
+        for j in range(0,len(df[df.columns[i]])):
+            df[df.columns[i]][j] = float(df[df.columns[i]][j].replace('D','E'))
+
 #################### we need tstep data to plot time series ###################
 
 # def plotTemporalMAT(filename, showHeaviside, x_ind):
@@ -359,7 +405,7 @@ benchmarkComp = False
 showHeaviside = False
 
 savedir = ''
-savefilename = 'comp_t_1_ft_py_mat.png'
+savefilename = 'marlpde.png'
 
 fig = plt.figure(figsize=(12,10))
 
@@ -371,7 +417,8 @@ ft = plotSpatialFt('%samarlt1'%(savedir))
 #mat = plotSpatialMAT('%sMatlab/Scenario_integrated.h5'%(savedir), showHeaviside, 1)
 # plot marlpde output
 pde = plotSpatialPDE('%spy-pde/LMAHeureuxPorosityDiff.hdf5'%(savedir), showHeaviside, 1)
-    
+
+
 # if benchmark, plot the Fig3e data for comparison
 if (benchmarkComp):
     plotFig3e()
@@ -458,3 +505,12 @@ plt.clf()
 # plt.ylabel('Concentrations') 
 # plt.savefig('%s'%(savefilename))
 # plt.clf()  
+
+# Plot temporal output of marlpde at some intermediate depth
+
+savedir = ''
+savefilename = 'marlpde-temporal.png'
+
+fig = plt.figure(figsize=(12,10))
+
+pde_t = plotTemporalPDE('%spy-pde/LMAHeureuxPorosityDiff-nonadaptive.hdf5'%(savedir), 150)
