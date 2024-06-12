@@ -34,11 +34,13 @@ def plotSpatialRhy(filename, showHeaviside):
     Xs = 131.9/0.1 # depth scaling constant
     x = np.array(df.x*Xs)
     
-    plt.plot(x,np.array(df.AR),label='AR')
-    plt.plot(x,np.array(df.CA),label='CA')
-    plt.plot(x,np.array(df.phi),label='phi')
-    plt.plot(x,np.array(df.ca),label='Ca')
-    plt.plot(x,np.array(df.co),label='CO')
+    colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
+
+    plt.plot(x,np.array(df.AR),label='AR',color=colors[0])
+    plt.plot(x,np.array(df.CA),label='CA',color=colors[1])
+    plt.plot(x,np.array(df.phi),label='phi',color=colors[2])
+    plt.plot(x,np.array(df.ca),label='Ca',color=colors[3])
+    plt.plot(x,np.array(df.co),label='CO',color=colors[4])
     
     if (showHeaviside):
         plotHeaviside(x/Xs)
@@ -271,7 +273,7 @@ def plotTemporalPDE(filename, depth):
           
       Returns
       -------
-      None.
+      df : Numpy array.
 
       '''
       # load data in the hdf5 file
@@ -289,6 +291,8 @@ def plotTemporalPDE(filename, depth):
       plt.plot(t_plot, np.array(df[:,4,depth]), label='phi_pde')
       plt.plot(t_plot, np.array(df[:,2,depth]), label='Ca_pde')
       plt.plot(t_plot, np.array(df[:,3,depth]), label='CO_pde')
+
+      return df
       
 
 def floatMarl(df):
@@ -405,19 +409,18 @@ benchmarkComp = False
 showHeaviside = False
 
 savedir = ''
-savefilename = 'marlpde.png'
+savefilename = 'comp_Tstar_1_py_pde.png'
 
 fig = plt.figure(figsize=(12,10))
 
 # plot python output 
-rhy = plotSpatialRhy('%ssolution_t_000001.ascii'%(savedir), showHeaviside)
+rhy = plotSpatialRhy('%sdt10/rhytmite/solution_t_000006.ascii'%(savedir), showHeaviside)
 # plot the Fortran output
-ft = plotSpatialFt('%samarlt1'%(savedir))
+#ft = plotSpatialFt('%samarlt1'%(savedir))
 # plot the Matlab
 #mat = plotSpatialMAT('%sMatlab/Scenario_integrated.h5'%(savedir), showHeaviside, 1)
 # plot marlpde output
-pde = plotSpatialPDE('%spy-pde/LMAHeureuxPorosityDiff.hdf5'%(savedir), showHeaviside, 1)
-
+pde = plotSpatialPDE('%sdt10/marlpde/LMAHeureuxPorosityDiff.hdf5'%(savedir), showHeaviside, 1)
 
 # if benchmark, plot the Fig3e data for comparison
 if (benchmarkComp):
@@ -513,4 +516,4 @@ savefilename = 'marlpde-temporal.png'
 
 fig = plt.figure(figsize=(12,10))
 
-pde_t = plotTemporalPDE('%spy-pde/LMAHeureuxPorosityDiff-nonadaptive.hdf5'%(savedir), 150)
+pde_t = plotTemporalPDE('%sdt10/marlpde/LMAHeureuxPorosityDiff.hdf5'%(savedir), 150)
