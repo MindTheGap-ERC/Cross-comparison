@@ -35,6 +35,18 @@ ORCID: [0000-0002-5057-0322](https://orcid.org/0000-0002-5057-0322)
 
 *Add Charlotte and Cedric*
 
+## Repository structure
+
+* dt1
+* dt10
+  * marlpde
+  * rhythmite
+  * pdepe: Matlab outputs after 10 time steps, each 10^-6
+* dt100
+  * marlpde
+  * rhythmite
+  * pdepe: Matlab outputs after 100 time steps, each 10^-6
+
 ## Copyright
 
 Copyright 2024 Netherlands eScience Center and Utrecht University
