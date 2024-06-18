@@ -416,9 +416,9 @@ fig = plt.figure(figsize=(12,10))
 # plot python output 
 rhy = plotSpatialRhy('%sdt10/rhytmite/solution_t_000006.ascii'%(savedir), showHeaviside)
 # plot the Fortran output
-#ft = plotSpatialFt('%samarlt1'%(savedir))
+ft = plotSpatialFt('%samarlt1'%(savedir))
 # plot the Matlab
-#mat = plotSpatialMAT('%sMatlab/Scenario_integrated.h5'%(savedir), showHeaviside, 1)
+mat = plotSpatialMAT('%sdt10/pdepe/Scenario_integrated_10_steps.h5'%(savedir), showHeaviside, 9)
 # plot marlpde output
 pde = plotSpatialPDE('%sdt10/marlpde/LMAHeureuxPorosityDiff.hdf5'%(savedir), showHeaviside, 1)
 
@@ -448,6 +448,7 @@ plt.plot(rhy.x*x_scale, np.abs(rhy.ca - ft.Ca.loc[:199]),label='ca',color=colors
 plt.plot(rhy.x*x_scale, np.abs(rhy.co - ft.CO.loc[:199]),label='co',color=colors[4], marker='x')
 plt.xlabel('x (cm)')
 plt.ylabel('residuals')
+plt.title('residuals rhythmite vs fortran')
 plt.xlim(0,500)
 plt.ylim(0, 0.01)
 plt.legend()
@@ -464,6 +465,7 @@ plt.plot(rhy.x*x_scale, np.abs(pde[1,2,:] - ft.Ca.loc[:199]),label='ca',color=co
 plt.plot(rhy.x*x_scale, np.abs(pde[1,3,:] - ft.CO.loc[:199]),label='co',color=colors[4], marker='x')
 plt.xlabel('x (cm)')
 plt.ylabel('residuals')
+plt.title('residuals between pypde and fortran')
 plt.xlim(0,500)
 plt.ylim(0, 0.01)
 plt.legend()
@@ -481,11 +483,75 @@ plt.plot(rhy.x*x_scale, np.abs(pde[1,2,:] - rhy.ca),label='ca',color=colors[3], 
 plt.plot(rhy.x*x_scale, np.abs(pde[1,3,:] - rhy.co),label='co',color=colors[4], marker='x')
 plt.xlabel('x (cm)')
 plt.ylabel('residuals')
+plt.title('residuals between pypde and rhythmite')
 plt.xlim(0,500)
 plt.ylim(0, 0.01)
 plt.legend()
 plt.savefig('%s%s'%(savedir,resfilename))
 plt.clf()
+
+########################## pdepe vs. rhythmite residuals #####################
+
+resfilename = 'res_t_1_rhythmite_pdepe.png'
+t_index = 9 # index of time step
+fig = plt.figure(figsize=(12, 10))
+def avg(x):
+    '''
+    take average of successive vector entries to account for differences in size of grid between implementations
+    '''
+    avg = 0.5 * (x[1:] + x[:-1])
+    return avg
+
+plt.plot(rhy.x * x_scale, np.abs(rhy.AR - avg(mat[0, :, t_index])), label='AR', color=colors[0], marker = 'x')
+plt.plot(rhy.x * x_scale, np.abs(rhy.CA - avg(mat[1, :, t_index])), label='CA', color=colors[1], marker = 'x')
+plt.plot(rhy.x * x_scale, np.abs(rhy.phi - avg(mat[4, :, t_index])), label='Po', color=colors[2], marker = 'x')
+plt.plot(rhy.x * x_scale, np.abs(rhy.ca - avg(mat[2, :, t_index])), label='ca', color=colors[3], marker = 'x')
+plt.plot(rhy.x * x_scale, np.abs(rhy.co - avg(mat[3, :, t_index])), label='co', color=colors[4], marker = 'x')
+plt.xlabel('x (cm)')
+plt.ylabel('residuals')
+plt.xlim(0, 500)
+plt.ylim(0, 0.01)
+plt.legend()
+plt.title("Residuals between rhythmite and matlab (pdepe)")
+plt.savefig('%s%s'%(savedir, resfilename))
+
+########################## pdepe vs. fortran residuals #####################
+
+resfilename = 'res_t_1_fortran_pdepe.png'
+t_index = 9 # index of time step
+fig = plt.figure(figsize=(12, 10))
+
+plt.plot(rhy.x * x_scale, np.abs(ft.AR.loc[:199] - avg(mat[0, :, t_index])), label='AR', color=colors[0], marker = 'x')
+plt.plot(rhy.x * x_scale, np.abs(ft.CA.loc[:199] - avg(mat[1, :, t_index])), label='CA', color=colors[1], marker = 'x')
+plt.plot(rhy.x * x_scale, np.abs(ft.Po.loc[:199] - avg(mat[4, :, t_index])), label='Po', color=colors[2], marker = 'x')
+plt.plot(rhy.x * x_scale, np.abs(ft.Ca.loc[:199] - avg(mat[2, :, t_index])), label='ca', color=colors[3], marker = 'x')
+plt.plot(rhy.x * x_scale, np.abs(ft.CO.loc[:199] - avg(mat[3, :, t_index])), label='co', color=colors[4], marker = 'x')
+plt.xlabel('x (cm)')
+plt.ylabel('residuals')
+plt.xlim(0, 500)
+plt.ylim(0, 0.01)
+plt.legend()
+plt.title("Residuals between fortran and matlab (pdepe)")
+plt.savefig('%s%s'%(savedir, resfilename))
+
+########################## pdepe vs. pypde residuals #####################
+
+resfilename = 'res_t_1_pypde_pdepe.png'
+t_index = 9 # index of time step
+fig = plt.figure(figsize=(12, 10))
+
+plt.plot(rhy.x * x_scale, np.abs(pde[1,0,:] - avg(mat[0, :, t_index])), label='AR', color=colors[0], marker = 'x')
+plt.plot(rhy.x * x_scale, np.abs(pde[1,1,:] - avg(mat[1, :, t_index])), label='CA', color=colors[1], marker = 'x')
+plt.plot(rhy.x * x_scale, np.abs(pde[1,4,:]- avg(mat[4, :, t_index])), label='Po', color=colors[2], marker = 'x')
+plt.plot(rhy.x * x_scale, np.abs(pde[1,2,:] - avg(mat[2, :, t_index])), label='ca', color=colors[3], marker = 'x')
+plt.plot(rhy.x * x_scale, np.abs(pde[1,3,:] - avg(mat[3, :, t_index])), label='co', color=colors[4], marker = 'x')
+plt.xlabel('x (cm)')
+plt.ylabel('residuals')
+plt.xlim(0, 500)
+plt.ylim(0, 0.01)
+plt.legend()
+plt.title("Residuals between pypde and matlab (pdepe)")
+plt.savefig('%s%s'%(savedir, resfilename))
 
 ########################### do a temporal plot ###############################
 
