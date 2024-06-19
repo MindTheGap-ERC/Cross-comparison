@@ -2,7 +2,7 @@
 
 ############################ plot comparision #################################
 # plot multiple simulation outputs on a single figure #
-# suports output from rythmite, Matlab and lheureux.f
+# Supports output from rythmite, Matlab, lheureux.f and marlpde.
 
 import matplotlib.pyplot as plt
 import numpy as np
