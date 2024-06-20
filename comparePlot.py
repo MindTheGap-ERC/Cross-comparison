@@ -234,22 +234,22 @@ def plotSpatialPDE(filename, showHeaviside, t_ind):
     # load data in the hdf5 file
     sol = h5py.File(filename,'r')
     
-    # convert to a np array
-    df = np.array(sol['data'])
+    # convert to a np array and select the time of evaluation.
+    df = np.array(sol['data'])[t_ind, :, :]
     
     # this doesn't store a x points array, calc it from L_x at the number points
-    nnx = len(df[0,0,:])
+    nnx = len(df[0, :])
     
     Xs = 131.9/0.1 # depth scaling constant
     x = np.linspace(0, 500, nnx)
     
     colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
     
-    plt.plot(x,df[t_ind,0,:],label='AR_pde',linestyle='dashdot',color=colors[0])
-    plt.plot(x,df[t_ind,1,:],label='CA_pde',linestyle='dashdot',color=colors[1])
-    plt.plot(x,df[t_ind,4,:],label='phi_pde',linestyle='dashdot',color=colors[2])
-    plt.plot(x,df[t_ind,2,:],label='Ca_pde',linestyle='dashdot',color=colors[3])
-    plt.plot(x,df[t_ind,3,:],label='CO_pde',linestyle='dashdot',color=colors[4])
+    plt.plot(x,df[0,:],label='AR_pde',linestyle='dashdot',color=colors[0])
+    plt.plot(x,df[1,:],label='CA_pde',linestyle='dashdot',color=colors[1])
+    plt.plot(x,df[4,:],label='phi_pde',linestyle='dashdot',color=colors[2])
+    plt.plot(x,df[2,:],label='Ca_pde',linestyle='dashdot',color=colors[3])
+    plt.plot(x,df[3,:],label='CO_pde',linestyle='dashdot',color=colors[4])
     
     if (showHeaviside):
         plotHeaviside(x/Xs)
@@ -414,13 +414,13 @@ savefilename = 'comp_Tstar_1_py_pde.png'
 fig = plt.figure(figsize=(12,10))
 
 # plot python output 
-rhy = plotSpatialRhy('%sdt10/rhytmite/solution_t_000006.ascii'%(savedir), showHeaviside)
+rhy = plotSpatialRhy('%sdt100/rhytmite/euler_upwind_switch_off_FV_on_no_clipping/solution_t_000100.ascii'%(savedir), showHeaviside)
 # plot the Fortran output
 ft = plotSpatialFt('%samarlt1'%(savedir))
 # plot the Matlab
-mat = plotSpatialMAT('%sdt10/pdepe/Scenario_integrated_10_steps.h5'%(savedir), showHeaviside, 9)
+mat = plotSpatialMAT('%sdt100/pdepe/Scenario_integrated_100_steps.h5'%(savedir), showHeaviside, 9)
 # plot marlpde output
-pde = plotSpatialPDE('%sdt10/marlpde/LMAHeureuxPorosityDiff.hdf5'%(savedir), showHeaviside, 1)
+pde = plotSpatialPDE('%sdt100/marlpde/euler/LMAHeureuxPorosityDiff.hdf5'%(savedir), showHeaviside, 100)
 
 # if benchmark, plot the Fig3e data for comparison
 if (benchmarkComp):
@@ -430,7 +430,7 @@ plt.legend(loc='lower right')
 plt.xlabel('x (cm)')
 plt.ylabel('Concentrations')
 plt.xlim(0,500)
-plt.ylim(0,1)
+# plt.ylim(0,1)
 plt.savefig('%s%s'%(savedir,savefilename))
 plt.clf()
 
@@ -458,11 +458,11 @@ plt.clf()
 ########################## pypde vs. ft residuals #############################
 resfilename = 'res_t_1_ft_pde.png'
 fig = plt.figure(figsize=(12,10))
-plt.plot(rhy.x*x_scale, np.abs(pde[1,0,:] - ft.AR.loc[:199]), label='AR',color=colors[0], marker='x')
-plt.plot(rhy.x*x_scale, np.abs(pde[1,1,:] - ft.CA.loc[:199]), label='CA',color=colors[1], marker ='x')
-plt.plot(rhy.x*x_scale, np.abs(pde[1,4,:] - ft.Po.loc[:199]),label='Po',color=colors[2], marker='x')
-plt.plot(rhy.x*x_scale, np.abs(pde[1,2,:] - ft.Ca.loc[:199]),label='ca',color=colors[3], marker='x')
-plt.plot(rhy.x*x_scale, np.abs(pde[1,3,:] - ft.CO.loc[:199]),label='co',color=colors[4], marker='x')
+plt.plot(rhy.x*x_scale, np.abs(pde[0, :] - ft.AR.loc[:199]), label='AR',color=colors[0], marker='x')
+plt.plot(rhy.x*x_scale, np.abs(pde[1, :] - ft.CA.loc[:199]), label='CA',color=colors[1], marker ='x')
+plt.plot(rhy.x*x_scale, np.abs(pde[4, :] - ft.Po.loc[:199]),label='Po',color=colors[2], marker='x')
+plt.plot(rhy.x*x_scale, np.abs(pde[2, :] - ft.Ca.loc[:199]),label='ca',color=colors[3], marker='x')
+plt.plot(rhy.x*x_scale, np.abs(pde[3, :] - ft.CO.loc[:199]),label='co',color=colors[4], marker='x')
 plt.xlabel('x (cm)')
 plt.ylabel('residuals')
 plt.title('residuals between pypde and fortran')
@@ -475,17 +475,42 @@ plt.clf()
 
 ########################## pypde vs. rhythmite residuals ######################
 resfilename = 'res_t_1_py_pde.png'
+
+rhythmite_cell_centers = rhy.x*x_scale
+
+marlpde_cell_centers = np.arange(1, 400, step = 2) * (500/400)
+
+
 fig = plt.figure(figsize=(12,10))
-plt.plot(rhy.x*x_scale, np.abs(pde[1,0,:] - rhy.AR), label='AR',color=colors[0], marker='x')
-plt.plot(rhy.x*x_scale, np.abs(pde[1,1,:] - rhy.CA), label='CA',color=colors[1], marker ='x')
-plt.plot(rhy.x*x_scale, np.abs(pde[1,4,:] - rhy.phi),label='Po',color=colors[2], marker='x')
-plt.plot(rhy.x*x_scale, np.abs(pde[1,2,:] - rhy.ca),label='ca',color=colors[3], marker='x')
-plt.plot(rhy.x*x_scale, np.abs(pde[1,3,:] - rhy.co),label='co',color=colors[4], marker='x')
+
+AR_marlpde_interp = np.interp(rhythmite_cell_centers, marlpde_cell_centers, pde[0,:], 
+                       left = np.nan, right=np.nan)
+plt.plot(rhy.x*x_scale, AR_marlpde_interp - rhy.AR, label='AR',color=colors[0], marker='x')
+
+CA_marlpde_interp = np.interp(rhythmite_cell_centers, marlpde_cell_centers, pde[1,:], 
+                              left = np.nan, right=np.nan)
+plt.plot(rhy.x*x_scale, CA_marlpde_interp - rhy.CA, label='CA',color=colors[1], 
+         marker ='x')
+
+po_marlpde_interp = np.interp(rhythmite_cell_centers, marlpde_cell_centers, pde[4,:], 
+                              left = np.nan, right=np.nan)
+plt.plot(rhy.x*x_scale, po_marlpde_interp - rhy.phi, label='Po',color=colors[2], 
+         marker='x')
+
+ca_marlpde_interp = np.interp(rhythmite_cell_centers, marlpde_cell_centers, pde[2,:], 
+                              left = np.nan, right=np.nan)
+plt.plot(rhy.x*x_scale, ca_marlpde_interp - rhy.ca, label='ca',color=colors[3],
+          marker='x')
+
+co_marlpde_interp = np.interp(rhythmite_cell_centers, marlpde_cell_centers, pde[3,:], 
+                              left = np.nan, right=np.nan)
+plt.plot(rhy.x*x_scale, co_marlpde_interp - rhy.co, label='co',color=colors[4], 
+         marker='x')
+
 plt.xlabel('x (cm)')
 plt.ylabel('residuals')
 plt.title('residuals between pypde and rhythmite')
 plt.xlim(0,500)
-plt.ylim(0, 0.01)
 plt.legend()
 plt.savefig('%s%s'%(savedir,resfilename))
 plt.clf()
@@ -540,11 +565,11 @@ resfilename = 'res_t_1_pypde_pdepe.png'
 t_index = 9 # index of time step
 fig = plt.figure(figsize=(12, 10))
 
-plt.plot(rhy.x * x_scale, np.abs(pde[1,0,:] - avg(mat[0, :, t_index])), label='AR', color=colors[0], marker = 'x')
-plt.plot(rhy.x * x_scale, np.abs(pde[1,1,:] - avg(mat[1, :, t_index])), label='CA', color=colors[1], marker = 'x')
-plt.plot(rhy.x * x_scale, np.abs(pde[1,4,:]- avg(mat[4, :, t_index])), label='Po', color=colors[2], marker = 'x')
-plt.plot(rhy.x * x_scale, np.abs(pde[1,2,:] - avg(mat[2, :, t_index])), label='ca', color=colors[3], marker = 'x')
-plt.plot(rhy.x * x_scale, np.abs(pde[1,3,:] - avg(mat[3, :, t_index])), label='co', color=colors[4], marker = 'x')
+plt.plot(rhy.x * x_scale, np.abs(pde[0, :] - avg(mat[0, :, t_index])), label='AR', color=colors[0], marker = 'x')
+plt.plot(rhy.x * x_scale, np.abs(pde[1, :] - avg(mat[1, :, t_index])), label='CA', color=colors[1], marker = 'x')
+plt.plot(rhy.x * x_scale, np.abs(pde[4, :]- avg(mat[4, :, t_index])), label='Po', color=colors[2], marker = 'x')
+plt.plot(rhy.x * x_scale, np.abs(pde[2, :] - avg(mat[2, :, t_index])), label='ca', color=colors[3], marker = 'x')
+plt.plot(rhy.x * x_scale, np.abs(pde[3, :] - avg(mat[3, :, t_index])), label='co', color=colors[4], marker = 'x')
 plt.xlabel('x (cm)')
 plt.ylabel('residuals')
 plt.xlim(0, 500)
@@ -582,4 +607,4 @@ savefilename = 'marlpde-temporal.png'
 
 fig = plt.figure(figsize=(12,10))
 
-pde_t = plotTemporalPDE('%sdt10/marlpde/LMAHeureuxPorosityDiff.hdf5'%(savedir), 150)
+pde_t = plotTemporalPDE('%sdt100/marlpde/euler/LMAHeureuxPorosityDiff.hdf5'%(savedir), 101)
