@@ -607,4 +607,4 @@ savefilename = 'marlpde-temporal.png'
 
 fig = plt.figure(figsize=(12,10))
 
-pde_t = plotTemporalPDE('%sdt100/marlpde/euler/LMAHeureuxPorosityDiff.hdf5'%(savedir), 101)
+pde_t = plotTemporalPDE('%sdt100/marlpde/euler/LMAHeureuxPorosityDiff.hdf5'%(savedir), 150)
