@@ -15,6 +15,16 @@ https://github.com/MindTheGap-ERC/LMA-Matlab (Matlab)
 
 ## Authors
 
+__Charlotte Summers__
+Utrecht University
+email: c.summers [at] uu.nl
+Web page: [www.uu.nl/staff/CSummers](https://www.uu.nl/staff/CSummers)
+
+__Cedric Thieulot__
+Utrecht University
+email: c.thieulot [at] uu.nl
+Web page: [www.cedricthieulot.net](http://www.cedricthieulot.net/)
+
 __Niklas Hohmann__  
 Utrecht University  
 email: n.h.hohmann [at] uu.nl  
@@ -33,7 +43,6 @@ email: h.spreeuw [at] esciencecenter.nl
 Web page: [www.esciencecenter.nl/team/dr-hanno-spreeuw/](https://www.esciencecenter.nl/team/dr-hanno-spreeuw)  
 ORCID: [0000-0002-5057-0322](https://orcid.org/0000-0002-5057-0322)
 
-*Add Charlotte and Cedric*
 
 ## Repository structure
 
