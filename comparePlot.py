@@ -414,13 +414,13 @@ savefilename = 'comp_Tstar_1_py_pde.png'
 fig = plt.figure(figsize=(12,10))
 
 # plot python output 
-rhy = plotSpatialRhy('%sdt100/rhytmite/euler_upwind_switch_off_FV_on_no_clipping/solution_t_000100.ascii'%(savedir), showHeaviside)
+rhy = plotSpatialRhy('%sdt1/rhythmite/euler_upwind_switch_off_FV_on_no_clipping/No_ADZ/solution_t_000099.ascii'%(savedir), showHeaviside)
 # plot the Fortran output
 ft = plotSpatialFt('%samarlt1'%(savedir))
 # plot the Matlab
 mat = plotSpatialMAT('%sdt100/pdepe/Scenario_integrated_100_steps.h5'%(savedir), showHeaviside, 9)
 # plot marlpde output
-pde = plotSpatialPDE('%sdt100/marlpde/euler/LMAHeureuxPorosityDiff.hdf5'%(savedir), showHeaviside, 100)
+pde = plotSpatialPDE('%sdt1/marlpde/euler/No_ADZ/LMAHeureuxPorosityDiff.hdf5'%(savedir), showHeaviside, 10)
 
 # if benchmark, plot the Fig3e data for comparison
 if (benchmarkComp):
@@ -607,4 +607,4 @@ savefilename = 'marlpde-temporal.png'
 
 fig = plt.figure(figsize=(12,10))
 
-pde_t = plotTemporalPDE('%sdt100/marlpde/euler/LMAHeureuxPorosityDiff.hdf5'%(savedir), 150)
+pde_t = plotTemporalPDE('%sdt1/marlpde/euler/No_ADZ/LMAHeureuxPorosityDiff.hdf5'%(savedir), 150)
