@@ -15,15 +15,15 @@ https://github.com/MindTheGap-ERC/LMA-Matlab (Matlab)
 
 ## Authors
 
-__Charlotte Summers__
-Utrecht University
-email: c.summers [at] uu.nl
-Web page: [www.uu.nl/staff/CSummers](https://www.uu.nl/staff/CSummers)
+__Charlotte Summers__  
+Utrecht University  
+email: c.summers [at] uu.nl  
+Web page: [www.uu.nl/staff/CSummers](https://www.uu.nl/staff/CSummers)  
 
-__Cedric Thieulot__
-Utrecht University
-email: c.thieulot [at] uu.nl
-Web page: [www.cedricthieulot.net](http://www.cedricthieulot.net/)
+__Cedric Thieulot__  
+Utrecht University  
+email: c.thieulot [at] uu.nl  
+Web page: [www.cedricthieulot.net](http://www.cedricthieulot.net/)  
 
 __Niklas Hohmann__  
 Utrecht University  

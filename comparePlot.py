@@ -117,6 +117,8 @@ def plotSpatialFt(filename):
     plt.plot(x,df.Po,label='Po_ft', linestyle='--',color=colors[2])
     plt.plot(x,df.Ca,label='ca_ft', linestyle='--',color=colors[3])
     plt.plot(x,df.CO,label='co_ft', linestyle='--',color=colors[4])
+    plt.xlabel('Depth [cm]')  
+    plt.ylabel('Concentration/Porosity')  
     
     return df
     
@@ -157,7 +159,8 @@ def plotTemporalFt(filename,depth_ind):
              linestyle='--',color=colors[3])
     plt.plot(t_plot, df[df.columns[depth_ind+16]], label=df.columns[depth_ind+16],\
              linestyle='--',color=colors[4])
-
+    plt.xlabel('Time [ky]')  
+    plt.ylabel('Concentration/Porosity')  
 
 def plotSpatialMAT(filename, showHeaviside, t_ind):
     '''
@@ -414,7 +417,7 @@ savefilename = 'comp_Tstar_1_py_pde.png'
 fig = plt.figure(figsize=(12,10))
 
 # plot python output 
-rhy = plotSpatialRhy('%sdt10/rhytmite/solution_t_000006.ascii'%(savedir), showHeaviside)
+# rhy = plotSpatialRhy('%sdt10/rhytmite/solution_t_000006.ascii'%(savedir), showHeaviside)
 # plot the Fortran output
 ft = plotSpatialFt('%samarlt1'%(savedir))
 # plot the Matlab
@@ -565,7 +568,7 @@ plt.savefig('%s%s'%(savedir, resfilename))
 # plotTemporalRhy('solution_x_000199.ascii')
 # # plot ft output
 # # depth ind, should match the position of the python file
-# plotTemporalFt('amarlx', 3)
+plotTemporalFt('amarlx', 3)
 
 # plt.legend()
 # plt.xlim(0,tf)
