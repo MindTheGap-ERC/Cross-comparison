@@ -43,22 +43,9 @@ email: h.spreeuw [at] esciencecenter.nl
 Web page: [www.esciencecenter.nl/team/dr-hanno-spreeuw/](https://www.esciencecenter.nl/team/dr-hanno-spreeuw)  
 ORCID: [0000-0002-5057-0322](https://orcid.org/0000-0002-5057-0322)
 
-
-## Repository structure
-
-* dt1
-* dt10
-  * marlpde
-  * rhythmite
-  * pdepe: Matlab outputs after 10 time steps, each 10^-6
-* dt100
-  * marlpde
-  * rhythmite
-  * pdepe: Matlab outputs after 100 time steps, each 10^-6
-
 ## Copyright
 
-Copyright 2024 Netherlands eScience Center and Utrecht University
+Copyright 2024-2025 Netherlands eScience Center and Utrecht University
 
 ## License
 
