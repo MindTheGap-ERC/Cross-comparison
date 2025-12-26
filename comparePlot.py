@@ -9,6 +9,19 @@ import numpy as np
 import pandas as pd
 import h5py
 
+# Public API - these functions can be imported
+__all__ = [
+    'plotSpatialRhy',
+    'plotTemporalRhy',
+    'plotSpatialFt',
+    'plotTemporalFt',
+    'plotSpatialMAT',
+    'plotSpatialPDE',
+    'plotTemporalPDE',
+    'plotFig3e',
+    'plotHeaviside',
+]
+
 def plotSpatialRhy(filename, showHeaviside):
     '''
     Plot a depth profile for all solution variables at fixed time.
