@@ -29,7 +29,7 @@ def plotSpatialRhy(filename, showHeaviside):
 
     '''
     
-    df = (pd.read_csv(filename, sep='\s+')).shift(axis=1).iloc[:,1:]
+    df = (pd.read_csv(filename, sep=r'\s+')).shift(axis=1).iloc[:,1:]
     
     Xs = 131.9/0.1 # depth scaling constant
     x = np.array(df.x*Xs)
@@ -66,7 +66,7 @@ def plotTemporalRhy(filename):
       None.
 
       '''
-      df = (pd.read_csv(filename, sep='\s+')).shift(axis=1).iloc[:,1:]
+      df = (pd.read_csv(filename, sep=r'\s+')).shift(axis=1).iloc[:,1:]
       
       Ts = 131.9/0.1**2 # time scaling constant
       t_plot = np.array(df.x*Ts/1000)
@@ -104,30 +104,31 @@ def plotSpatialFt(filename):
     None.
 
     '''
-    df = pd.read_csv(filename, sep='\s+')
+    df = pd.read_csv(filename, sep=r'\s+')
     floatMarl(df)
-    
+
     Xs = 131.9/0.1 # depth scaling constant
     x = df.x*Xs
-    
-    colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
-    
-    plt.plot(x,df.AR,label='AR_ft', linestyle='--',color=colors[0])
+
+    # Okabe-Ito colorblind-friendly palette
+    colors = ['#E69F00', '#56B4E9', '#009E73', '#F0E442', '#0072B2']
+
+    plt.plot(x,df.AR,label='AR_ft', linestyle='-',color=colors[0])
     plt.plot(x,df.CA,label='CA_ft', linestyle='--',color=colors[1])
-    plt.plot(x,df.Po,label='Po_ft', linestyle='--',color=colors[2])
-    plt.plot(x,df.Ca,label='ca_ft', linestyle='--',color=colors[3])
-    plt.plot(x,df.CO,label='co_ft', linestyle='--',color=colors[4])
-    plt.xlabel('Depth [cm]')  
+    plt.plot(x,df.Po,label='Po_ft', linestyle='-.',color=colors[2])
+    plt.plot(x,df.Ca,label='ca_ft', linestyle=':',color=colors[3])
+    plt.plot(x,df.CO,label='co_ft', linestyle=(0, (3, 1, 1, 1)),color=colors[4])
+    plt.xlabel('Depth [cm]')
     plt.ylabel('Concentration/Porosity')  
     
     return df
     
     
 
-def plotTemporalFt(filename,depth_ind):
+def plotTemporalFt(filename,depth_ind,output_filename=None):
     '''
-    Plot the time series at fixed depth for all solution variables from the 
-    output of lheureux.f
+    Plot the time series at fixed depth for all solution variables from the
+    output of lheureux.f and save to SVG file.
 
     Parameters
     ----------
@@ -135,32 +136,45 @@ def plotTemporalFt(filename,depth_ind):
         Filename for the data to be plotted.
     depth_ind : INT
         Index describing which depth to plot (1 = 0, 4 = base of domain).
+    output_filename : STR, optional
+        Output filename for the SVG plot. If None, generates name from input filename.
 
     Returns
     -------
     None.
 
     '''
-    df = pd.read_csv(filename, sep='\s+')
+    df = pd.read_csv(filename, sep=r'\s+')
     floatMarl(df)
-    
+
     Ts = 131.9/0.1**2 # time scaling constant
     t_plot = df.t*Ts/1000
-    
-    colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
-    
-    plt.plot(t_plot, df[df.columns[depth_ind]], label=df.columns[depth_ind],\
-             linestyle='--',color=colors[0])
-    plt.plot(t_plot, df[df.columns[depth_ind+4]], label=df.columns[depth_ind+4],\
+
+    plt.figure()
+
+    # colorblind-friendly palette
+    colors = ['#E69F00', 'red', '#000000', '#009E73', '#0072B2']
+
+    plt.plot(t_plot, df[df.columns[depth_ind]], label="Aragonite",\
+             linestyle='-',color=colors[0])
+    plt.plot(t_plot, df[df.columns[depth_ind+4]], label="Calcite",\
              linestyle='--',color=colors[1])
-    plt.plot(t_plot, df[df.columns[depth_ind+8]], label=df.columns[depth_ind+8],\
-             linestyle='--',color=colors[2])
-    plt.plot(t_plot, df[df.columns[depth_ind+12]], label=df.columns[depth_ind+12],\
-             linestyle='--',color=colors[3])
-    plt.plot(t_plot, df[df.columns[depth_ind+16]], label=df.columns[depth_ind+16],\
-             linestyle='--',color=colors[4])
-    plt.xlabel('Time [ky]')  
-    plt.ylabel('Concentration/Porosity')  
+    plt.plot(t_plot, df[df.columns[depth_ind+8]], label="Porosity",\
+             linestyle='-.',color=colors[2])
+    plt.plot(t_plot, df[df.columns[depth_ind+12]], label=r"$Ca^{2+}$",\
+             linestyle=':',color=colors[3])
+    plt.plot(t_plot, df[df.columns[depth_ind+16]], label=r"$CO_3^{2-}$",\
+             linestyle=(0, (3, 1, 1, 1)),color=colors[4])
+    plt.xlabel('Time [ky]')
+    plt.ylabel('Concentration/Porosity')
+    plt.legend(loc='lower right')
+
+    # Generate output filename if not provided
+    if output_filename is None:
+        output_filename = f"Fortran_temporal_depth{depth_ind}.svg"
+
+    plt.savefig(output_filename, format='svg', bbox_inches='tight')
+    plt.close() 
 
 def plotSpatialMAT(filename, showHeaviside, t_ind):
     '''
