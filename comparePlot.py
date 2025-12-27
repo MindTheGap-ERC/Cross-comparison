@@ -81,6 +81,8 @@ def plotTemporalRhy(filename):
       '''
       df = (pd.read_csv(filename, sep=r'\s+')).shift(axis=1).iloc[:,1:]
       
+      plt.figure()
+
       Ts = 131.9/0.1**2 # time scaling constant
       t_plot = np.array(df.x*Ts/1000)
       
@@ -89,7 +91,9 @@ def plotTemporalRhy(filename):
       plt.plot(t_plot, np.array(df.phi), label=df.columns[5])
       plt.plot(t_plot, np.array(df.ca), label=df.columns[3])
       plt.plot(t_plot, np.array(df.co), label=df.columns[4])
-      
+
+      plt.savefig("rhythmite_temporal_depth.svg", format='svg', bbox_inches='tight')
+      plt.close()
 
 def floatMarl(df):
     '''

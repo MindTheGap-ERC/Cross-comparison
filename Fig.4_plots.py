@@ -1,6 +1,8 @@
 import matplotlib.pyplot as plt
 import pandas as pd
-from comparePlot import floatMarl
+from comparePlot import floatMarl, plotTemporalRhy
+
+############# FORTRAN RUNS ##############
 
 # Create figure with two subplots side by side
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
@@ -45,3 +47,7 @@ ax2.text(0.02, 0.98, '(b)', transform=ax2.transAxes,
 plt.tight_layout()
 plt.savefig('Fortran_temporal_panel.svg', format='svg', bbox_inches='tight')
 plt.close()
+
+############# rhytmite RUNS ##############
+
+plotTemporalRhy("data/replication/rhythmite/Fig._4a/solution_x_000199.ascii")
