@@ -2,10 +2,11 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from comparePlot import floatMarl, plotTemporalRhy
 
-############# FORTRAN RUNS ##############
 
-# Create figure with two subplots side by side
-fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+# Create figure with 2x2 subplots
+fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(12, 10))
+
+############# FORTRAN RUNS ##############
 
 # Common settings
 depth_ind = 4
@@ -43,11 +44,25 @@ ax2.legend(loc='lower right')
 ax2.text(0.02, 0.98, '(b)', transform=ax2.transAxes,
         fontsize=12, fontweight='bold', va='top')
 
+############# RHYTHMITE RUNS ##############
+
+# Plot third panel (bottom left - Fig 4c)
+plotTemporalRhy("data/replication/rhythmite/Fig._4a/solution_x_000199.ascii", ax=ax3)
+ax3.set_xlabel('Time [ky]')
+ax3.set_ylabel('Concentration/Porosity')
+ax3.text(0.02, 0.98, '(c)', transform=ax3.transAxes,
+        fontsize=12, fontweight='bold', va='top')
+
+# Plot fourth panel (bottom right - Fig 4d)
+plotTemporalRhy("data/replication/rhythmite/Fig._4b/solution_x_000199.ascii", ax=ax4)
+ax4.set_xlabel('Time [ky]')
+ax4.set_ylabel('Concentration/Porosity')
+ax4.legend(loc='lower right')
+ax4.text(0.02, 0.98, '(d)', transform=ax4.transAxes,
+        fontsize=12, fontweight='bold', va='top')
+
 # Adjust layout and save
 plt.tight_layout()
-plt.savefig('Fortran_temporal_panel.svg', format='svg', bbox_inches='tight')
+plt.savefig('Fig.4_replication.svg', format='svg', bbox_inches='tight')
 plt.close()
 
-############# rhytmite RUNS ##############
-
-plotTemporalRhy("data/replication/rhythmite/Fig._4a/solution_x_000199.ascii")

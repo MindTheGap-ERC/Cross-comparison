@@ -22,6 +22,11 @@ __all__ = [
     'plotHeaviside',
 ]
 
+labels = ["Aragonite", "Calcite", "Porosity", r"$Ca^{2+}$", r"$CO_3^{2-}$"]
+line_styles = ['-', '--', '-.', ':', (0, (3, 1, 1, 1))]
+colors = ['#E69F00', 'red', '#000000', '#009E73', '#0072B2']
+
+
 def plotSpatialRhy(filename, showHeaviside):
     '''
     Plot a depth profile for all solution variables at fixed time.
@@ -62,7 +67,7 @@ def plotSpatialRhy(filename, showHeaviside):
     return df
     
     
-def plotTemporalRhy(filename):
+def plotTemporalRhy(filename, ax=None):
       '''
       Plot the time series at fixed depth for all solution variables from 
       Rhythmite output 
@@ -80,20 +85,26 @@ def plotTemporalRhy(filename):
 
       '''
       df = (pd.read_csv(filename, sep=r'\s+')).shift(axis=1).iloc[:,1:]
-      
-      plt.figure()
+
+      if ax is None:
+          plt.figure()
+          ax = plt.gca()
+          save_fig = True
+      else:
+          save_fig = False
 
       Ts = 131.9/0.1**2 # time scaling constant
       t_plot = np.array(df.x*Ts/1000)
       
-      plt.plot(t_plot, np.array(df.AR), label=df.columns[1])
-      plt.plot(t_plot, np.array(df.CA), label=df.columns[2])
-      plt.plot(t_plot, np.array(df.phi), label=df.columns[5])
-      plt.plot(t_plot, np.array(df.ca), label=df.columns[3])
-      plt.plot(t_plot, np.array(df.co), label=df.columns[4])
+      ax.plot(t_plot, np.array(df.AR), label=labels[0], color = colors[0], linestyle = line_styles[0])
+      ax.plot(t_plot, np.array(df.CA), label=labels[1], color = colors[1], linestyle = line_styles[1])
+      ax.plot(t_plot, np.array(df.phi), label=labels[2], color = colors[2], linestyle = line_styles[2])
+      ax.plot(t_plot, np.array(df.ca), label=labels[3], color = colors[3], linestyle = line_styles[3])
+      ax.plot(t_plot, np.array(df.co), label=labels[4], color = colors[4], linestyle = line_styles[4])
 
-      plt.savefig("rhythmite_temporal_depth.svg", format='svg', bbox_inches='tight')
-      plt.close()
+      if save_fig:
+          plt.savefig("rhythmite_temporal_depth.svg", format='svg', bbox_inches='tight')
+          plt.close()
 
 def floatMarl(df):
     '''
