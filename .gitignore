@@ -1,1 +1,6 @@
 __pycache__
+
+# replication data
+data/replication/rhythmite/Fig._4a/*.vtu
+data/replication/rhythmite/Fig._4b/*.vtu
+
