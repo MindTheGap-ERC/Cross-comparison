@@ -4,3 +4,8 @@ __pycache__
 data/replication/rhythmite/Fig._4a/*.vtu
 data/replication/rhythmite/Fig._4b/*.vtu
 
+# larger system data files (too large for GitHub)
+data/larger_system/
+
+# additional data
+data/d_phi/
