@@ -199,9 +199,9 @@ def plotTemporalFt(filename,depth_ind,output_filename=None):
 
     # Generate output filename if not provided
     if output_filename is None:
-        output_filename = f"Fortran_temporal_depth{depth_ind}.svg"
+        output_filename = f"Fortran_temporal_depth{depth_ind}.png"
 
-    plt.savefig(output_filename, format='svg', bbox_inches='tight')
+    plt.savefig(output_filename, format='png', bbox_inches='tight')
     plt.close() 
 
 def plotSpatialMAT(filename, showHeaviside, t_ind):
